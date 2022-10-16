@@ -112,15 +112,10 @@ def import_module(name, package=None):
     relative import to an absolute import.
 
     """
-    level = 0
-    if name.startswith('.'):
-        if not package:
-            raise TypeError("the 'package' argument is required to perform a "
-                            f"relative import for {name!r}")
-        for character in name:
-            if character != '.':
-                break
-            level += 1
+    if name.startswith(".") and not package:
+        raise TypeError("the 'package' argument is required to perform a "
+                        f"relative import for {name!r}")
+    level = next((index for index, character in enumerate(name) if character != "."), 0)
     return _bootstrap._gcd_import(name[level:], package, level)
 
 
